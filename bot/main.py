@@ -61,13 +61,17 @@ application.add_handler(contacts.contacts_get_callback_handler)
 # Flask route for Telegram webhook
 @app.route("/webhook", methods=["POST"])
 def webhook():
-    update = Update.de_json(request.get_json(force=True), application.bot)
-    logger.info(update.to_dict())
-    asyncio.run_coroutine_threadsafe(
-        application.process_update(update), 
-        loop
-    )
-    return "ok"
+    try:
+        update = Update.de_json(request.get_json(force=True), application.bot)
+        logger.info(f"Received update: {update.update_id}")
+        asyncio.run_coroutine_threadsafe(
+            application.process_update(update), 
+            loop
+        )
+        return "ok"
+    except Exception as e:
+        logger.error(f"Error in webhook: {str(e)}", exc_info=True)
+        return "error", 500
 
 
 
