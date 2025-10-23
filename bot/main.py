@@ -6,6 +6,7 @@ from telegram.ext import Application
 import config
 from handlers import send, status, tiers, contacts, start
 from jwt_manager import jwt_manager
+import asyncio
 
 # Enable logging
 logging.basicConfig(
@@ -50,9 +51,11 @@ application.add_handler(contacts.contacts_get_callback_handler)
 @app.route("/webhook", methods=["POST"])
 def webhook():
     update = Update.de_json(request.get_json(force=True), application.bot)
-    logger.info(update.to_dict()) 
-    await application.process_update(update)
+    logger.info(update.to_dict())
+    loop = asyncio.get_event_loop()
+    loop.create_task(application.process_update(update))
     return "ok"
+
 
 # Health check route
 @app.route("/", methods=["GET"])
