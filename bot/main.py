@@ -31,6 +31,8 @@ app = Flask(__name__)
 
 # Create the Telegram Application
 application = Application.builder().token(config.BOT_TOKEN).build()
+asyncio.run_coroutine_threadsafe(application.initialize(), loop)
+
 
 # Load JWT tokens at startup
 try:
