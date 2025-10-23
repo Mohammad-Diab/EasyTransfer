@@ -9,15 +9,11 @@ import os
 # Load environment variables
 load_dotenv()
 
-
 def create_app():
-    """Application factory pattern"""
     app = Flask(__name__)
-    
-    # Security configuration
     app.config['SECRET_KEY'] = os.getenv('JWT_SECRET', 'fallback-secret-key')
-    
-    # Add security headers
+
+    # Security headers
     @app.after_request
     def add_security_headers(response):
         response.headers['X-Content-Type-Options'] = 'nosniff'
@@ -26,20 +22,21 @@ def create_app():
         response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
         response.headers['Content-Security-Policy'] = "default-src 'self'"
         return response
-    
-    # Initialize database
+
+    # Initialize DB
     init_db()
-    
+
     # Register blueprints
     app.register_blueprint(request_bp)
     app.register_blueprint(contact_bp)
     app.register_blueprint(health_bp)
-    
+
     return app
 
+# Make app visible for Gunicorn
+app = create_app()
+app.json.ensure_ascii = False
 
 if __name__ == '__main__':
-    app = create_app()
-    # Only run in debug mode if explicitly set in environment
     debug_mode = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
-    app.run(debug=debug_mode)
+    app.run(host="0.0.0.0", port=5000, debug=debug_mode)
