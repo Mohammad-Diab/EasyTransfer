@@ -1,3 +1,4 @@
+from threading import Thread
 import logging
 import os
 from flask import Flask, request
@@ -14,6 +15,16 @@ logging.basicConfig(
     level=logging.INFO
 )
 logger = logging.getLogger(__name__)
+
+# Create and start the event loop in a separate thread
+def start_loop(loop):
+    asyncio.set_event_loop(loop)
+    loop.run_forever()
+
+loop = asyncio.new_event_loop()
+t = Thread(target=start_loop, args=(loop,))
+t.daemon = True
+t.start()
 
 # Create Flask app
 app = Flask(__name__)
@@ -52,9 +63,12 @@ application.add_handler(contacts.contacts_get_callback_handler)
 def webhook():
     update = Update.de_json(request.get_json(force=True), application.bot)
     logger.info(update.to_dict())
-    loop = asyncio.get_event_loop()
-    loop.create_task(application.process_update(update))
+    asyncio.run_coroutine_threadsafe(
+        application.process_update(update), 
+        loop
+    )
     return "ok"
+
 
 
 # Health check route
