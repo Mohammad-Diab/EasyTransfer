@@ -51,7 +51,7 @@ application.add_handler(contacts.contacts_get_callback_handler)
 def webhook():
     update = Update.de_json(request.get_json(force=True), application.bot)
     logger.info(update.to_dict()) 
-    application.process_update(update)
+    await application.process_update(update)
     return "ok"
 
 # Health check route
