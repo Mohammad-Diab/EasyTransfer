@@ -50,7 +50,7 @@ application.add_handler(contacts.contacts_get_callback_handler)
 @app.route("/webhook", methods=["POST"])
 def webhook():
     update = Update.de_json(request.get_json(force=True), application.bot)
-    application.update_queue.put(update)
+    application.process_update(update)
     return "ok"
 
 # Health check route
