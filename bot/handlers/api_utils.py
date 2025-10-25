@@ -43,7 +43,7 @@ def make_api_request(
     Raises:
         APIError: If the request fails or returns an error
     """
-    url = f"{config.SERVER_URL.rstrip('/')}/{endpoint.lstrip('/')}"
+    url = f"{config.SERVER_URL.rstrip('/')}/{endpoint.lstrip('/')}/"
     
     # Set default headers if not provided
     if headers is None:
@@ -64,13 +64,11 @@ def make_api_request(
         logger.info(f"Making {method} request to {url}")
         
         if method.upper() == 'GET':
-            response = requests.get(url, params=params, headers=headers, timeout=10)
+            response = requests.get(url, params=params, headers=headers, timeout=10, allow_redirects=False)
         elif method.upper() == 'POST':
-            response = requests.post(url, json=data, params=params, headers=headers, timeout=10)
-        elif method.upper() == 'PUT':
-            response = requests.put(url, json=data, params=params, headers=headers, timeout=10)
+            response = requests.post(url, json=data, params=params, headers=headers, timeout=10, allow_redirects=False)
         elif method.upper() == 'DELETE':
-            response = requests.delete(url, json=data, params=params, headers=headers, timeout=10)
+            response = requests.delete(url, params=params, headers=headers, timeout=10, allow_redirects=False)
         else:
             raise ValueError(f"Unsupported HTTP method: {method}")
         
