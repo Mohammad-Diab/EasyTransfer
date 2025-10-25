@@ -1,0 +1,16 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . /app
+
+RUN apt-get update && apt-get install -y google-cloud-sdk
+
+RUN chmod +x /app/entrypoint.sh /app/db_sync.sh
+
+ENV PORT=8080
+
+CMD ["/app/entrypoint.sh"]
