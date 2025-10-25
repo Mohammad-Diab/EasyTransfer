@@ -43,7 +43,7 @@ def make_api_request(
     Raises:
         APIError: If the request fails or returns an error
     """
-    url = f"{config.SERVER_URL.rstrip('/')}/{endpoint.lstrip('/')}/"
+    url = f"{config.SERVER_URL.rstrip('/')}/{endpoint}"
     
     # Set default headers if not provided
     if headers is None:
@@ -113,12 +113,12 @@ def get_request_status(account_id:str, request_id: str) -> Dict[str, Any]:
 
 def create_request(account_id: str, request_data: Dict[str, Any]) -> Dict[str, Any]:
     """Create a new request"""
-    return make_api_request(f"requests", 'POST', data=request_data, account_id=account_id)
+    return make_api_request(f"requests/", 'POST', data=request_data, account_id=account_id)
 
 # Contacts API functions
 def get_contacts(account_id: int) -> Dict[str, Any]:
     """Get list of all contacts for a specific account"""
-    return make_api_request(f"contacts", 'GET', account_id=account_id)
+    return make_api_request(f"contacts/", 'GET', account_id=account_id)
 
 def add_contact(account_id: int, phone_number: str, name: str) -> Dict[str, Any]:
     """Add a new contact to an account"""
@@ -126,7 +126,7 @@ def add_contact(account_id: int, phone_number: str, name: str) -> Dict[str, Any]
         "phone_number": phone_number,
         "name": name
     }
-    return make_api_request(f"contacts", 'POST', data=contact_data, account_id=account_id)
+    return make_api_request(f"contacts/", 'POST', data=contact_data, account_id=account_id)
 
 def delete_contact(account_id: int, contact_id: int) -> Dict[str, Any]:
     """Delete a contact from an account"""
