@@ -16,7 +16,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 TOKEN = config.BOT_TOKEN
-URL = os.environ["RENDER_EXTERNAL_URL"]  # e.g. https://your-app.onrender.com
+URL = os.environ["WEBHOOK_URL"]  # e.g. https://your-app.onrender.com
 
 # Create PTB Application
 application = Application.builder().token(TOKEN).build()
